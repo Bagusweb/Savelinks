@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/main.css">
+    <!-- Poppins Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <!-- <script src="./local/icons/all.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+        integrity="sha512-RXf+QSDCUQs5uwRKaDoXt55jygZZm2V++WUZduaU/Ui/9EGp3f/2KZVahFZBKGH0s774sd3HmrhUy+SgOFQLVQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="manifest" href="icons/site.webmanifest">
+    <title>Web Links Management | savelinks.</title>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container flex jc-sb ai-c">
+            <a href="" class="logo" translate="no">savelinks.</i></a>
+
+            <a href="https://github.com/bagusweb" target="_blank" class="link-icon-github"
+                title="Open source code in github">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+    <!-- End of navbar -->
+
+    <!-- Form add link -->
+    <div class="container">
+        <div class="grid-layout">
+            <div class="wrapper form-create-link">
+                <div class="form-collapse" id="formCollapse">
+                    <h2 class="title">Add Link</h2>
+                    <hr class="devider">
+                    <form id="formAddLink" method="post">
+                        <div class="input-group">
+                            <label for="inputTitle" class="label">Link title</label>
+                            <input type="text" class="input input-title" id="inputTitle" name="inputTitle" required
+                                placeholder="Enter a title">
+                        </div>
+                        <div class="input-group">
+                            <label for="inputUrl" class="label">URL</label>
+                            <input type="url" class="input input-url" id="inputUrl" name="inputUrl" required
+                                placeholder="https://...">
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btnAdd"><i class="fa fa-plus"></i> Add
+                            to links list</button>
+                    </form>
+                </div>
+                <button class="btn btn-secondary btn-sm btn-collapse mt-2" data-target="formCollapse">Hide Form</button>
+            </div>
+            <!-- End of form add link -->
+
+            <div class="wrapper">
+                <div class="alert alert-success link-alert" style="display: none;">
+                    <div class="alert-content"></div>
+                    <div class="close text-danger"><i class="fa fa-times"></i></div>
+                </div>
+                <h2 class="title">Links List</h2>
+                <hr class="devider">
+
+                <div class="input-group">
+                    <label for="inputSearch" class="label">Search</label>
+                    <div class="input-search">
+                        <input type=" text" class="input" id="inputSearch" placeholder="Enter keyword..." autofocus>
+                    </div>
+                </div>
+
+                <div class="grid-features mb-2">
+                    <button class="btn btn-secondary btn-export" title="Export links to share"><i
+                            class="fa fa-file-export"></i></button>
+                    <button class="btn btn-secondary" onclick="handleTabs(0)" title="Import links"><i
+                            class="fa fa-file-import"></i></button>
+                    <button class="btn btn-secondary" onclick="handleTabs(1)"><i class="fa fa-filter"></i></button>
+                    <button class="btn btn-danger btn-delete-all" title="Delete all links"></button>
+                </div>
+
+                <div class="tabs-group">
+                    <div class="tab-item">
+                        <form action="" id="formImportLinks" class="grid-import-links py-1">
+                            <input type="file" name="fileJson" accept="application/json" required>
+                            <button type="submit" class="btn btn-secondary btn-import">Import</button>
+                        </form>
+                    </div>
+
+                    <div class="tab-item">
+                        <div class="filters">
+                            <div class="input-group">
+                                <label for="sortLinks" class="label">Sort links</label>
+                                <select class="input" id="sortLinks">
+                                    <option value="0">Date Created (Asc)</option>
+                                    <option value="1" selected>Date Created (Desc)</option>
+                                    <option value="2">Title (Asc)</option>
+                                    <option value="3">Title (Desc)</option>
+                                    <option value="4">Date Updated (Asc)</option>
+                                    <option value="5">Date Updated (Desc)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List link -->
+                <ul class="list-group"></ul>
+                <!-- End of list link -->
+            </div>
+        </div>
+    </div>
+
+    <div class="backdrop" data-target="modalEdit" id="modalEdit">
+        <div class="container">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2 class="title mb-2">Edit Link</h2>
+                    <button class="btn btn-secondary px-2 btn-close-modal" data-target="modalEdit"><i
+                            class="fa fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditLink">
+                        <input type="hidden" id="inputIdEdit" name="inputIdEdit">
+                        <input type="hidden" id="inputCreatedAtEdit" name="inputCreatedAt">
+                        <div class="input-group">
+                            <label for="inputTitleEdit" class="label">Link title</label>
+                            <input type="text" class="input input-title" id="inputTitleEdit" name="inputTitleEdit"
+                                required placeholder="Enter a title">
+                        </div>
+                        <div class="input-group">
+                            <label for="inputUrlEdit" class="label">URL</label>
+                            <input type="url" class="input input-url" id="inputUrlEdit" name="inputUrlEdit" required
+                                placeholder="https://...">
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btnEdit"><i class="fa fa-edit"></i>
+                            Edit link</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to top -->
+    <div class="btn-back-to-top">
+        <i class="fa fa-chevron-up"></i>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Created by <a href="https://github.com/bagusweb" target="_blank" class="my-name">Bagus Erlangga.</a>
+            </p>
+        </div>
+    </footer>
+    <!-- Footer -->
+
+    <!-- Scripts -->
+    <script type="module" src="./js/app.js"></script>
+    <script>
+        const tabItems = document.querySelectorAll('.tabs-group .tab-item');
+        // handle tabs
+        const handleTabs = function (index) {
+            tabItems.forEach((item, indexItem) => {
+                if (index !== indexItem) { // close other
+                    item.style.display = 'none';
+                } else {
+                    if (item.style.display == 'block') { // for close tab
+                        item.style.display = 'none';
+                    } else {
+                        item.style.display = 'block'; // show tab
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>
