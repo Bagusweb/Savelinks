@@ -1,3 +1,3 @@
 # Web Links Management
 
-Link website [https://savelinks.netlify.app/]([https://bagusweb.github.io/Savelinks/]).
+Link website [https://bagusweb.github.io/Savelinks/].
